@@ -3,8 +3,10 @@ module app
 go 1.21.0
 
 require (
+	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.22
 	github.com/celestix/gotgproto v1.0.0-beta13
 	github.com/davecgh/go-spew v1.1.1
+	github.com/gotd/td v0.88.0
 )
 
 require (
@@ -15,7 +17,6 @@ require (
 	github.com/go-faster/xor v1.0.0 // indirect
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
-	github.com/gotd/td v0.88.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/compress v1.17.0 // indirect
