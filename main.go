@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
+	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/filters/message"
 	"github.com/celestix/gotgproto"
 	"github.com/celestix/gotgproto/dispatcher"
 	gphandlers "github.com/celestix/gotgproto/dispatcher/handlers"
@@ -19,7 +20,6 @@ import (
 
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers"
-	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/filters/message"
 )
 
 func main() {
@@ -68,6 +68,20 @@ func RunTGBot(botToken string) {
 	})
 	dispatcher := updater.Dispatcher
 
+	sumf := func(b *gotgbot.Bot, ctx *ext.Context) error {
+		fmt.Println("INSIDE COMMAND /sum")
+		//spew.Dump(ctx.EffectiveChat)
+		spew.Dump(ctx)
+
+		fmt.Println("************************************")
+		spew.Dump(ctx.EffectiveSender)
+		spew.Dump(ctx.EffectiveChat)
+		spew.Dump(ctx.EffectiveUser)
+		fmt.Println("======================================")
+		return nil
+	}
+	dispatcher.AddHandler(handlers.NewCommand("sum", sumf))
+	// NOTE: Order seems to matter ..
 	// Add echo handler to reply to all text messages.
 	dispatcher.AddHandler(handlers.NewMessage(message.Text, echo))
 
