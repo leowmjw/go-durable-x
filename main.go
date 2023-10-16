@@ -148,6 +148,8 @@ func Run(appID int, botToken, appHash string) {
 	fmt.Println("SECRET stuff ..", xss)
 
 	dispatcher := c.Dispatcher
+	//c.Self
+	//c.CreateContext().GetChat(300).
 	// Command Handler for /start
 	dispatcher.AddHandler(gphandlers.NewCommand("start", start))
 	// Callback Query Handler with prefix filter for recieving specific query
