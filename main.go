@@ -1,7 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"strconv"
+	"time"
+
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/filters/message"
 	"github.com/celestix/gotgproto"
@@ -9,14 +16,10 @@ import (
 	gphandlers "github.com/celestix/gotgproto/dispatcher/handlers"
 	"github.com/celestix/gotgproto/dispatcher/handlers/filters"
 	gpext "github.com/celestix/gotgproto/ext"
+	//gpfunctions "github.com/celestix/gotgproto/functions"
 	"github.com/celestix/gotgproto/sessionMaker"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gotd/td/tg"
-	"log"
-	"net/http"
-	"os"
-	"strconv"
-	"time"
 
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers"
@@ -32,7 +35,11 @@ func main() {
 	botToken := os.Getenv("TELEGRAM_BOT_KEY")
 	fmt.Println("DUMP:", appID, appHash, botToken)
 	//Run(appID, appHash, botToken)
-	RunTGBot(botToken)
+
+	// Test as Bot ..
+	//RunTGBot(botToken)
+	// tets new .. as App
+	RunTGProto(appID, appHash)
 }
 
 func RunTGBot(botToken string) {
@@ -112,6 +119,102 @@ func echo(b *gotgbot.Bot, ctx *ext.Context) error {
 		return fmt.Errorf("failed to echo message: %w", err)
 	}
 	return nil
+}
+
+// RunTGProto uses gotgproto to authenticate as an app
+func RunTGProto(appID int, appHash string) {
+
+	// Identify as app using the phone number
+	clientType := gotgproto.ClientType{
+		Phone: "+60162332450",
+	}
+
+	// Now newclient to get the context for filtering out subscribed channels/chats
+	client, err := gotgproto.NewClient(appID, appHash, clientType,
+		&gotgproto.ClientOpts{
+			Session:          sessionMaker.NewSession("/tmp/tgproto", sessionMaker.Session),
+			AutoFetchReply:   true,
+			DisableCopyright: true,
+		})
+
+	if err != nil {
+		panic(err)
+	}
+	me := client.Self
+
+	//inputChannel := &tg.InputChannel{
+	//	ChannelID:  123445,
+	//	AccessHash: 0,
+	//}
+	//client.API().ChannelsGetChannels(context.Background(), []tg.InputUser{})
+	state, gserr := client.API().UpdatesGetState(context.Background())
+	if gserr != nil {
+		panic(gserr)
+	}
+	fmt.Println("STATE:", state.String())
+	// DEBUG State ..
+	//spew.Dump(state)
+
+	fmt.Printf("client (@%s) has been started...\n", me.Username)
+
+	//gpfunctions.GetMessages(context.Background(), nil, 0, nil)
+	//msrc, mgscerr := client.API().MessagesGetSearchResultsCalendar(context.Background(), &tg.MessagesGetSearchResultsCalendarRequest{
+	//	Peer:   me.AsInputPeer(),
+	//	Filter: filters.MessageFilter(),
+	//})
+	//if mgscerr != nil {
+	//	panic(mgscerr)
+	//}
+	// FInally can get all the chats!!
+	// Is the first one Saved Messages?
+	//fmt.Println("DATA:", msrc.GetChats()[0].String())
+	// now dump out raw data ...
+	//fmt.Println("RAW DATA next ..")
+	//spew.Dump(msrc.GetChats())
+	//c := gotgproto.Client.API(client)
+	//MessagesGetSearchResultsCalendar(context.Background(), &tg.MessagesGetSearchResultsCalendarRequest{
+	//	Peer:       nil,
+	//	Filter:     nil,
+	//	OffsetID:   0,
+	//	OffsetDate: 0,
+	//})
+
+	fmt.Println("========================= MessagesGetDialogUnreadMarks ====================================")
+	mgdu, mgduerr := client.API().MessagesGetDialogUnreadMarks(context.Background())
+
+	if mgduerr != nil {
+		panic(mgduerr)
+	}
+	spew.Dump(mgdu)
+
+	fmt.Println("========================= MessagesGetDialogs ====================================")
+	mgd, mgderr := client.API().MessagesGetDialogs(context.Background(), &tg.MessagesGetDialogsRequest{
+		//Flags:         0,
+		ExcludePinned: true,
+		//FolderID:      0,
+		//OffsetDate:    0,
+		//OffsetID:      0,
+		OffsetPeer: me.AsInputPeer(),
+		Limit:      10,
+		//Hash:          0,
+	})
+	if mgderr != nil {
+		panic(mgderr)
+	}
+	spew.Dump(mgd)
+
+	fmt.Println("========================= MessagesGetDialogFilters ====================================")
+	mgdf, mgdferr := client.API().MessagesGetDialogFilters(context.Background())
+	if mgdferr != nil {
+		panic(mgdferr)
+	}
+	spew.Dump(mgdf)
+
+	ierr := client.Idle()
+	if ierr != nil {
+		panic(ierr)
+	}
+
 }
 
 // Run uses gotgproto .. not working  :(
