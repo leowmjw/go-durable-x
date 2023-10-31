@@ -23,6 +23,8 @@ import (
 
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers"
+
+	ggtelegram "github.com/amarnathcjd/gogram/telegram"
 )
 
 func main() {
@@ -40,6 +42,8 @@ func main() {
 	//RunTGBot(botToken)
 	// tets new .. as App
 	RunTGProto(appID, appHash)
+
+	//RunGoGram(appID, appHash)
 }
 
 func RunTGBot(botToken string) {
@@ -119,6 +123,80 @@ func echo(b *gotgbot.Bot, ctx *ext.Context) error {
 		return fmt.Errorf("failed to echo message: %w", err)
 	}
 	return nil
+}
+
+// RunGoGram uses gogram to authenticate as an app ..
+func RunGoGram(appID int, appHash string) {
+	// Test runing basic ..
+
+	// Create a new client
+	client, ncerr := ggtelegram.NewClient(ggtelegram.ClientConfig{
+		AppID:    int32(appID),
+		AppHash:  appHash,
+		LogLevel: ggtelegram.LogDebug,
+		//StringSession: "", // Uncomment this line to use string session
+		Session: "/tmp/gogram",
+	})
+
+	if ncerr != nil {
+		panic(ncerr)
+	}
+
+	// Connect to the server
+	if err := client.Connect(); err != nil {
+		panic(err)
+	}
+
+	// Authenticate the client using the bot token
+	// This will send a code to the phone number if it is not already authenticated
+	if _, err := client.Login("+60162332450"); err != nil {
+		panic(err)
+	}
+
+	//uo, gmerr := client.GetMe()
+	//if gmerr != nil {
+	//	panic(gmerr)
+	//}
+	//
+	//spew.Dump(uo)
+
+	//client.MessagesSearch(ggtelegram.MessagesSearchParams{
+	//	Peer:     ggtelegram.
+	//	Q:         "",
+	//	FromID:    nil,
+	//	TopMsgID:  0,
+	//	Filter:    nil,
+	//	MinDate:   0,
+	//	MaxDate:   0,
+	//	OffsetID:  0,
+	//	AddOffset: 0,
+	//	Limit:     0,
+	//	MaxID:     0,
+	//	MinID:     0,
+	//	Hash:      0,
+	//})
+
+	//dialogs, err := client.GetDialogs()
+	//if err != nil {
+	//	panic(err)
+	//}
+	//for _, dialog := range dialogs {
+	//	switch d := dialog.(type) {
+	//	case *ggtelegram.DialogObj:
+	//		fmt.Println(d.TopMessage)
+	//	default:
+	//		fmt.Println("UNKNOWN ...")
+	//		spew.Dump(d)
+	//	}
+	//
+	//}
+	//d, gderr := client.GetDialogs()
+	//if gderr != nil {
+	//	panic(gderr)
+	//}
+	//spew.Dump(d)
+	client.Idle()
+
 }
 
 // RunTGProto uses gotgproto to authenticate as an app

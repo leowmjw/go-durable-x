@@ -4,6 +4,7 @@ go 1.21.0
 
 require (
 	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.22
+	github.com/amarnathcjd/gogram v0.0.0-20231016113233-a54087a01881
 	github.com/celestix/gotgproto v1.0.0-beta13
 	github.com/davecgh/go-spew v1.1.1
 	github.com/gotd/td v0.88.0
@@ -19,7 +20,7 @@ require (
 	github.com/gotd/neo v0.1.5 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/klauspost/compress v1.17.1 // indirect
+	github.com/klauspost/compress v1.17.2 // indirect
 	github.com/mattn/go-sqlite3 v1.14.17 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
@@ -34,6 +35,6 @@ require (
 	golang.org/x/sys v0.13.0 // indirect
 	gorm.io/driver/sqlite v1.5.4 // indirect
 	gorm.io/gorm v1.25.5 // indirect
-	nhooyr.io/websocket v1.8.7 // indirect
+	nhooyr.io/websocket v1.8.10 // indirect
 	rsc.io/qr v0.2.0 // indirect
 )
