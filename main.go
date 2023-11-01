@@ -41,9 +41,9 @@ func main() {
 	// Test as Bot ..
 	//RunTGBot(botToken)
 	// tets new .. as App
-	RunTGProto(appID, appHash)
+	//RunTGProto(appID, appHash)
 
-	//RunGoGram(appID, appHash)
+	RunGoGram(appID, appHash)
 }
 
 func RunTGBot(botToken string) {
@@ -153,49 +153,113 @@ func RunGoGram(appID int, appHash string) {
 		panic(err)
 	}
 
-	//uo, gmerr := client.GetMe()
-	//if gmerr != nil {
-	//	panic(gmerr)
-	//}
-	//
+	uo, gmerr := client.GetMe()
+	if gmerr != nil {
+		panic(gmerr)
+	}
+
+	// DEBUG
 	//spew.Dump(uo)
+	//client.Cache.UpdateUser(uo)
 
-	//client.MessagesSearch(ggtelegram.MessagesSearchParams{
-	//	Peer:     ggtelegram.
-	//	Q:         "",
-	//	FromID:    nil,
-	//	TopMsgID:  0,
-	//	Filter:    nil,
-	//	MinDate:   0,
-	//	MaxDate:   0,
-	//	OffsetID:  0,
-	//	AddOffset: 0,
-	//	Limit:     0,
-	//	MaxID:     0,
-	//	MinID:     0,
-	//	Hash:      0,
-	//})
-
-	//dialogs, err := client.GetDialogs()
+	dialogs, gderr := client.GetDialogs(&ggtelegram.DialogOptions{
+		//OffsetID:      0,
+		//OffsetDate: 1698220267,
+		OffsetPeer: &ggtelegram.InputPeerUser{
+			UserID:     uo.ID,
+			AccessHash: uo.AccessHash,
+		},
+		Limit: 10,
+		//ExcludePinned: true,
+		//FolderID:      0,
+	})
+	if gderr != nil {
+		panic(gderr)
+	}
+	// DEBUG
+	//spew.Dump(dialogs)
 	//if err != nil {
 	//	panic(err)
 	//}
-	//for _, dialog := range dialogs {
-	//	switch d := dialog.(type) {
-	//	case *ggtelegram.DialogObj:
-	//		fmt.Println(d.TopMessage)
-	//	default:
-	//		fmt.Println("UNKNOWN ...")
-	//		spew.Dump(d)
-	//	}
-	//
-	//}
+	for _, dialog := range dialogs {
+		switch d := dialog.(type) {
+		case *ggtelegram.DialogObj:
+			//fmt.Println(d.TopMessage)
+			switch pt := d.Peer.(type) {
+
+			case *ggtelegram.PeerChat:
+				id := pt.ChatID
+				fmt.Println(">>> CHAT: ", id)
+				co, gcerr := client.GetChat(id)
+				if gcerr != nil {
+					fmt.Println("ERR: ", gcerr)
+					continue
+				}
+				spew.Dump(co.Title)
+			case *ggtelegram.PeerUser:
+				id := pt.UserID
+				fmt.Println(">>> USER: ", id)
+				uo, guerr := client.GetUser(id)
+				if guerr != nil {
+					fmt.Println("ERR: ", guerr)
+					continue
+				}
+				// For Saved Message is chat with self?
+				if uo.Username == "leowmjw" {
+					uuf, ugferr := client.UsersGetFullUser(&ggtelegram.InputUserSelf{})
+					if ugferr != nil {
+						fmt.Println("ERR: ", ugferr)
+					}
+					spew.Dump(uuf)
+
+					continue
+				}
+				fmt.Println("USER: ", uo.Username)
+			case *ggtelegram.PeerChannel:
+				id := pt.ChannelID
+				fmt.Println(">>> CHANNEL: ", id)
+				c, gcerr := client.GetChannel(id)
+				if gcerr != nil {
+					//panic(gcerr)
+					fmt.Println("ERR: ", gcerr)
+					//mf, cgferr := client.ChannelsGetFullChannel(&ggtelegram.InputChannelObj{
+					//	ChannelID: id,
+					//})
+					//if cgferr != nil {
+					//	fmt.Println("ERR: ", cgferr)
+					//	continue
+					//}
+					//spew.Dump(mf)
+					continue
+				}
+				spew.Dump(c.Title)
+			default:
+				fmt.Println("UNKNOWN TYPE: ", pt)
+			}
+		default:
+			fmt.Println("UNKNOWN ...")
+			spew.Dump(d)
+		}
+	}
 	//d, gderr := client.GetDialogs()
 	//if gderr != nil {
 	//	panic(gderr)
 	//}
 	//spew.Dump(d)
-	client.Idle()
+
+	// Below is the answer we are llking for ..
+	mm, msgerr := client.MessagesGetHistory(&ggtelegram.MessagesGetHistoryParams{
+		Peer: &ggtelegram.InputPeerSelf{},
+		//OffsetDate: 1698824064, // Returns items before this timestamp ..
+		Limit: 2,
+	})
+	if msgerr != nil {
+		//fmt.Println("ERR: ", msgerr)
+		panic(msgerr)
+	}
+	spew.Dump(mm)
+
+	//client.Idle()
 
 }
 
@@ -219,6 +283,11 @@ func RunTGProto(appID int, appHash string) {
 		panic(err)
 	}
 	me := client.Self
+
+	// this works ..
+	//client.API().MessagesGetHistory(context.Background(), &tg.MessagesGetHistoryRequest{
+	//	Peer:       nil,
+	//})
 
 	//inputChannel := &tg.InputChannel{
 	//	ChannelID:  123445,
@@ -317,6 +386,7 @@ func Run(appID int, botToken, appHash string) {
 		fmt.Println("ERR cerr!!")
 		panic(cerr)
 	}
+
 	fmt.Println("OK!!!")
 	// Identify the user
 	fmt.Println("USER: ", c.Self.Username)

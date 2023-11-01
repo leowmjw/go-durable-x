@@ -7,7 +7,7 @@ require (
 	github.com/amarnathcjd/gogram v0.0.0-20231016113233-a54087a01881
 	github.com/celestix/gotgproto v1.0.0-beta13
 	github.com/davecgh/go-spew v1.1.1
-	github.com/gotd/td v0.88.0
+	github.com/gotd/td v0.89.0
 )
 
 require (
