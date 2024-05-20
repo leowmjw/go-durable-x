@@ -2,11 +2,15 @@
 
 ## CI/CD
 
+- Dagger
 - Earthly ..
 
 ## Durable Execution
 
 - Temporal 
+- LittleHorse
+- Restate - restate.dev
+- GolemCloud
 - IWF
 
 ## Durable Execution - DX
@@ -16,6 +20,8 @@
 
 ## Durable Promise
 
+- Dispatch (Python only) - https://docs.dispatch.run/
+- Resonate
 - github.com/stealthrocket/timecraft
 - https://github.com/resonatehq/durable-promise
 
@@ -23,3 +29,7 @@
 
 - PartyKit
 - TinyBase 
+
+## Distributed System Simulation
+
+- Anthesis

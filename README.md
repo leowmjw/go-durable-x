@@ -3,6 +3,14 @@ Compare Durable Execution + Promise Examples
 
 ## Scenarios
 
+### DB Blue Green
+
+### AWS PrivateLink Updater
+
+### AWS DocumentDB Temporary Instance Boost
+
+### Onboard Multi-tenant to DB via ShardingSphere
+
 ### Breakglass
 
 ### Telegram Note Processor
