@@ -17,11 +17,15 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-# Go workspace file
-go.work
+# Go workspace file(s)
+go.work*
 
 # Ignore Direnv
 .envrc*
 
 # Ignore Goland
 .idea
+
+# Ignore local Telegram cache ..
+cache.db
+
