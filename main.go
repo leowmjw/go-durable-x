@@ -1,7 +1,7 @@
 package main
 
 import (
-	"app/telegram"
+	"app/telegram" // Local ref using go.work ..
 	"fmt"
 	"os"
 	"strconv"
