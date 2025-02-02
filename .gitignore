@@ -29,3 +29,6 @@ go.work*
 # Ignore local Telegram cache ..
 cache.db
 
+# Ignore binaries
+compare/temporal/temporal
+
