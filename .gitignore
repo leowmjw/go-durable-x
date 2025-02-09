@@ -31,4 +31,7 @@ cache.db
 
 # Ignore binaries
 compare/temporal/temporal
+compare/restate/restate
 
+# Ignore restate data
+restate-data
