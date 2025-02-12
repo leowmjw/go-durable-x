@@ -1,19 +1,8 @@
 package main
 
-import (
-	"context"
-	"log/slog"
-	"os"
-	"testing"
-	"time"
-
-	"github.com/leowmjw/go-durable-x/temporal/types"
-	"github.com/restatedev/sdk-go"
-	"github.com/restatedev/sdk-go/server"
-	"github.com/stretchr/testify/assert"
-)
-
-
+// Too complicated; must for now use full integration tests
+// Does not seem to have any testsuite capabilities like Temporal for now ..
+/*
 
 func TestTravelBookingService(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
@@ -121,3 +110,4 @@ func TestTravelBookingService(t *testing.T) {
 		assert.Equal(t, types.StatusFailed, booking.Status)
 	})
 }
+*/
