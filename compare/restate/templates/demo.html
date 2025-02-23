@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Booking Demo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        .booking-form { margin: 1rem; }
+        .concurrent-forms { display: flex; gap: 2rem; }
+        .response { margin-top: 1rem; padding: 1rem; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Travel Booking Demo</h1>
+        <div class="concurrent-forms">
+            <!-- Form 1 -->
+            <article class="booking-form">
+                <h3>Booking 1</h3>
+                <form id="form1" onsubmit="event.preventDefault(); submitForm(this);">
+                    <label for="user1">User ID:</label>
+                    <select name="userID" id="user1">
+                        <option value="alice">Alice</option>
+                        <option value="bob">Bob</option>
+                        <option value="charlie">Charlie</option>
+                    </select>
+
+                    <label for="hotel1">Hotel:</label>
+                    <select name="hotelID" id="hotel1">
+                        <option value="hotel-123">Luxury Palace ($200)</option>
+                        <option value="hotel-456">Business Inn ($150)</option>
+                        <option value="hotel-789">Comfort Stay ($100)</option>
+                    </select>
+
+                    <label for="room1">Room Type:</label>
+                    <select name="roomType" id="room1">
+                        <option value="deluxe">Deluxe</option>
+                        <option value="suite">Suite</option>
+                        <option value="standard">Standard</option>
+                    </select>
+
+                    <label for="flight1">Flight:</label>
+                    <select name="flightNumber" id="flight1">
+                        <option value="FL123">FL123 - Morning ($300)</option>
+                        <option value="FL456">FL456 - Afternoon ($250)</option>
+                        <option value="FL789">FL789 - Evening ($200)</option>
+                    </select>
+
+                    <label for="seat1">Seat Class:</label>
+                    <select name="seatClass" id="seat1">
+                        <option value="economy">Economy</option>
+                        <option value="business">Business</option>
+                        <option value="first">First Class</option>
+                    </select>
+
+                    <label for="car1">Car Type:</label>
+                    <select name="carType" id="car1">
+                        <option value="SUV">SUV ($100)</option>
+                        <option value="luxury">Luxury ($200)</option>
+                        <option value="compact">Compact ($80)</option>
+                    </select>
+
+                    <button type="submit">Book Travel 1</button>
+                </form>
+                <div id="response1" class="response"></div>
+            </article>
+
+            <!-- Form 2 -->
+            <article class="booking-form">
+                <h3>Booking 2</h3>
+                <form id="form2" onsubmit="event.preventDefault(); submitForm(this);">
+                    <label for="user2">User ID:</label>
+                    <select name="userID" id="user2">
+                        <option value="bob">Bob</option>
+                        <option value="alice">Alice</option>
+                        <option value="charlie">Charlie</option>
+                    </select>
+
+                    <label for="hotel2">Hotel:</label>
+                    <select name="hotelID" id="hotel2">
+                        <option value="hotel-456">Business Inn ($150)</option>
+                        <option value="hotel-123">Luxury Palace ($200)</option>
+                        <option value="hotel-789">Comfort Stay ($100)</option>
+                    </select>
+
+                    <label for="room2">Room Type:</label>
+                    <select name="roomType" id="room2">
+                        <option value="suite">Suite</option>
+                        <option value="deluxe">Deluxe</option>
+                        <option value="standard">Standard</option>
+                    </select>
+
+                    <label for="flight2">Flight:</label>
+                    <select name="flightNumber" id="flight2">
+                        <option value="FL456">FL456 - Afternoon ($250)</option>
+                        <option value="FL123">FL123 - Morning ($300)</option>
+                        <option value="FL789">FL789 - Evening ($200)</option>
+                    </select>
+
+                    <label for="seat2">Seat Class:</label>
+                    <select name="seatClass" id="seat2">
+                        <option value="business">Business</option>
+                        <option value="economy">Economy</option>
+                        <option value="first">First Class</option>
+                    </select>
+
+                    <label for="car2">Car Type:</label>
+                    <select name="carType" id="car2">
+                        <option value="luxury">Luxury ($200)</option>
+                        <option value="SUV">SUV ($100)</option>
+                        <option value="compact">Compact ($80)</option>
+                    </select>
+
+                    <button type="submit">Book Travel 2</button>
+                </form>
+                <div id="response2" class="response"></div>
+            </article>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <button onclick="submitBoth()" class="contrast">Submit Both Bookings Concurrently</button>
+        </div>
+    </main>
+
+    <script>
+        function formatBookingData(form) {
+            const now = new Date();
+            const endDate = new Date(now);
+            endDate.setDate(now.getDate() + 4); // 4 days from now
+
+            return {
+                bookingID: 'booking-' + Math.random().toString(36).substring(7),
+                userID: form.querySelector('[name="userID"]').value,
+                startDate: now.toISOString(),
+                endDate: endDate.toISOString(),
+                hotelBooking: {
+                    hotelID: form.querySelector('[name="hotelID"]').value,
+                    roomType: form.querySelector('[name="roomType"]').value,
+                    price: parseFloat(form.querySelector('[name="hotelID"] option:checked').text.match(/\$(\d+)/)[1])
+                },
+                flightBooking: {
+                    flightNumber: form.querySelector('[name="flightNumber"]').value,
+                    seatClass: form.querySelector('[name="seatClass"]').value,
+                    price: parseFloat(form.querySelector('[name="flightNumber"] option:checked').text.match(/\$(\d+)/)[1])
+                },
+                carBooking: {
+                    carType: form.querySelector('[name="carType"]').value,
+                    price: parseFloat(form.querySelector('[name="carType"] option:checked').text.match(/\$(\d+)/)[1])
+                }
+            };
+        }
+
+        function submitForm(form) {
+            const idempotencyKey = 'booking-' + form.querySelector('[name="userID"]').value + '-' + Date.now();
+            const bookingData = formatBookingData(form);
+            const responseId = form.id === 'form1' ? 'response1' : 'response2';
+            
+            document.getElementById(responseId).textContent = 'Submitting booking...';
+            
+            fetch('http://localhost:8080/TravelBookingService/BookTravel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Idempotency-Key': idempotencyKey,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(bookingData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById(responseId).textContent = 
+                    `Booking successful!\nID: ${bookingData.bookingID}\nIdempotency Key: ${idempotencyKey}`;
+            })
+            .catch(error => {
+                document.getElementById(responseId).textContent = 
+                    `Error: ${error.message}\nBooking ID: ${bookingData.bookingID}\nIdempotency Key: ${idempotencyKey}`;
+            });
+        }
+
+        function submitBoth() {
+            document.querySelectorAll('form').forEach(form => submitForm(form));
+        }
+    </script>
+</body>
+</html>

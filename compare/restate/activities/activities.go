@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/leowmjw/go-durable-x/temporal/types"
 )
 
@@ -23,7 +24,8 @@ func NewActivities(logger *slog.Logger) *Activities {
 
 // Hotel Activities
 func (a *Activities) BookHotel(ctx context.Context, booking *types.HotelBooking) error {
-	//spew.Dump(booking)
+	fmt.Println("INSIDE BookHotel>>>>>>>>>>>")
+	spew.Dump(booking)
 	// Simulate external API call
 	time.Sleep(time.Second)
 
@@ -43,6 +45,7 @@ func (a *Activities) BookHotel(ctx context.Context, booking *types.HotelBooking)
 }
 
 func (a *Activities) CancelHotel(ctx context.Context, bookingRef string) error {
+	fmt.Println("INSIDE CancelHotel>>>>>>>>>>>")
 	// Simulate external API call
 	time.Sleep(time.Second)
 
@@ -54,6 +57,8 @@ func (a *Activities) CancelHotel(ctx context.Context, bookingRef string) error {
 
 // Flight Activities
 func (a *Activities) BookFlight(ctx context.Context, booking *types.FlightBooking) error {
+	fmt.Println("INSIDE BookFlight>>>>>>>>>>>")
+	spew.Dump(booking)
 	// Simulate external API call
 	time.Sleep(time.Second)
 
@@ -73,6 +78,7 @@ func (a *Activities) BookFlight(ctx context.Context, booking *types.FlightBookin
 }
 
 func (a *Activities) CancelFlight(ctx context.Context, bookingRef string) error {
+	fmt.Println("INSIDE CancelFlight>>>>>>>>>>>")
 	// Simulate external API call
 	time.Sleep(time.Second)
 
@@ -84,6 +90,8 @@ func (a *Activities) CancelFlight(ctx context.Context, bookingRef string) error 
 
 // Car Activities
 func (a *Activities) BookCar(ctx context.Context, booking *types.CarBooking) error {
+	fmt.Println("INSIDE BookCar>>>>>>>>>>>")
+	spew.Dump(booking)
 	// Simulate external API call
 	time.Sleep(time.Second)
 
@@ -103,6 +111,8 @@ func (a *Activities) BookCar(ctx context.Context, booking *types.CarBooking) err
 }
 
 func (a *Activities) CancelCar(ctx context.Context, bookingRef string) error {
+	fmt.Println("INSIDE CancelCar>>>>>>>>>>>")
+	fmt.Println("bookingRef", bookingRef)
 	// Simulate external API call
 	time.Sleep(time.Second)
 
