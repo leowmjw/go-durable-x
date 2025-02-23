@@ -3,14 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
-	"github.com/leowmjw/go-durable-x/restate/activities"
 	"log/slog"
 	"os"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
+	"github.com/leowmjw/go-durable-x/restate/activities"
+
 	"github.com/leowmjw/go-durable-x/temporal/types"
-	"github.com/restatedev/sdk-go"
+	restate "github.com/restatedev/sdk-go"
 	"github.com/restatedev/sdk-go/server"
 )
 
@@ -170,16 +171,16 @@ func (s *TravelBookingService) BookTravel(ctx restate.Context, booking types.Tra
 		s.logger.Error("failed to book hotel", "error", err)
 		return err
 	}
-	/*
-		// Book flight
-		if _, err := restate.Service[error](ctx, ServiceName, "BookFlight").Request(booking.FlightBooking); err != nil {
-			s.logger.Error("failed to book flight", "error", err)
-			// Compensate hotel booking
-			if _, cerr := restate.Service[error](ctx, ServiceName, "CancelHotel").Request(booking.HotelBooking.BookingRef); cerr != nil {
-				s.logger.Error("failed to cancel hotel", "error", cerr)
-			}
-			return err
+	// Book flight
+	if _, err := restate.Service[restate.Void](ctx, ServiceName, "BookFlight").Request(booking.FlightBooking); err != nil {
+		s.logger.Error("failed to book flight", "error", err)
+		// Compensate hotel booking
+		if _, cerr := restate.Service[restate.Void](ctx, ServiceName, "CancelHotel").Request(booking.HotelBooking.BookingRef); cerr != nil {
+			s.logger.Error("failed to cancel hotel", "error", cerr)
 		}
+		return err
+	}
+	/*
 
 		// Book car
 		if _, err := restate.Service[error](ctx, ServiceName, "BookCar").Request(booking.CarBooking); err != nil {

@@ -3,10 +3,11 @@ package activities
 import (
 	"context"
 	"fmt"
-	"github.com/leowmjw/go-durable-x/temporal/types"
 	"log/slog"
 	"math/rand"
 	"time"
+
+	"github.com/leowmjw/go-durable-x/temporal/types"
 )
 
 // Activities implementation
@@ -27,7 +28,7 @@ func (a *Activities) BookHotel(ctx context.Context, booking *types.HotelBooking)
 	time.Sleep(time.Second)
 
 	// Simulate random failure
-	if rand.Float32() < 0.8 { // 20% chance of failure
+	if rand.Float32() < 0.2 { // 20% chance of failure
 		return fmt.Errorf("hotel booking failed: service unavailable")
 	}
 
