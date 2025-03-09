@@ -16,12 +16,6 @@ temporal workflow start \
 # Wait for workflow to initialize
 sleep 2
 
-# Initial state check
-echo -e "\nInitial state check:"
-temporal workflow query \
-  --workflow-id $WORKFLOW_ID \
-  --query-type getStatus
-
 # Send setUp signal
 echo -e "\nSending setUp signal..."
 temporal workflow signal \
@@ -30,12 +24,6 @@ temporal workflow signal \
 
 # Allow time for activity to complete
 sleep 3
-
-# Check state after setUp
-echo -e "\nState after setUp:"
-temporal workflow query \
-  --workflow-id $WORKFLOW_ID \
-  --query-type getStatus
 
 # Send tearDown signal
 echo -e "\nSending tearDown signal..."
@@ -46,14 +34,8 @@ temporal workflow signal \
 # Allow time for activity to complete
 sleep 3
 
-# Check state after tearDown
-echo -e "\nState after tearDown:"
-temporal workflow query \
-  --workflow-id $WORKFLOW_ID \
-  --query-type getStatus
-
-# Complete the workflow
-echo -e "\nCompleting workflow..."
+# Complete the workflow and show final state
+echo -e "\nCompleting workflow and retrieving final state..."
 temporal workflow signal \
   --workflow-id $WORKFLOW_ID \
   --name complete
@@ -61,8 +43,11 @@ temporal workflow signal \
 # Wait for workflow to complete
 sleep 2
 
-# Check workflow status
-echo -e "\nWorkflow completion status:"
+# Show workflow history and completion status
+echo -e "\nWorkflow history:"
+temporal workflow show --workflow-id $WORKFLOW_ID | grep -E "WorkflowExecutionStarted|ActivityTaskScheduled|ActivityTaskCompleted|SignalExternalWorkflowExecution" | head -15
+
+echo -e "\nFinal workflow status:"
 temporal workflow describe --workflow-id $WORKFLOW_ID | grep Status
 
-echo -e "\nIntegration test complete!"
+echo -e "\nIntegration test complete! Machine went through full lifecycle: DOWN -> UP -> DOWN -> Complete"

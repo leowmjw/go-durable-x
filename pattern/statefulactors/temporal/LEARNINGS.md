@@ -131,6 +131,50 @@ This document captures key learnings and insights from implementing a robust, fa
 
 5. **Logging Strategy**: Include detailed logging for debugging and observability
 
+6. **Simplified Interface**: Focus on workflow completion status rather than intermediate state queries for a cleaner API pattern
+
+## Simplified API Approach
+
+We've adopted a simplified approach that more closely matches the Restate pattern:
+
+### From Query-Based to Completion-Based
+
+The implementation has evolved from:
+
+```
+1. Send signal to change state
+2. Query to check current state
+3. Send another signal
+4. Query again
+5. Complete workflow
+```
+
+To the simpler:
+
+```
+1. Send signal to change state
+2. Send another signal when ready
+3. Complete workflow and check final status
+```
+
+### Benefits of the Simplified Approach
+
+1. **Closer to Restate Model**: Matches the Restate actor pattern where operations complete and return a final state
+
+2. **Reduced API Surface**: Fewer API calls needed to accomplish the same task
+
+3. **Natural Linearization**: The workflow history clearly shows the order of operations without needing intermediate queries
+
+4. **Improved Testing**: Test scripts can focus on the end-to-end flow rather than intermediate states
+
+### Implementation Considerations
+
+1. **Signal-Only Interface**: Operations are driven entirely by signals, with workflow completion providing the final verification
+
+2. **Workflow History as Proof**: The execution history becomes the source of truth for operation sequencing and effects
+
+3. **Retries Handled Automatically**: Activities still retry automatically during the workflow, but this is now entirely internal to the implementation
+
 ## Comparisons with Other Approaches
 
 ### Temporal vs. Restate Implementation
